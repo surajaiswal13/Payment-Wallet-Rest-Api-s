@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+    <form class="form-group mb-3 form-control-sm" action="{% url 'wallet:create_wallet' %}" method='POST' enctype="multipart/form-data" >
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        {% csrf_token %}
+
+        {% bootstrap_form form %}
+        <br>
+
+        <!-- {{ form.media }} - form.media is used for displaying the content iof editor -->
+        
+  
+            <button class="testbutton" type="submit" value="Submit">Create Wallet</button>
+            <br>
+            <br>
+    
+            <button><a href="{% url 'wallet:add_money' pk=request.user.id %}" >Add Money</a></button>
+            <br>
+            <br>
+            <button><a href="{% url 'wallet:checkbalance' pk=request.user.id %}" >Check Balance</a></button>
+            <br>
+            <br>
+            <button><a href="{% url 'wallet:deletewallet' pk=request.user.id %}" >Delete Wallet</a></button>
+
+            <br>
+            <br>
+
+
+
+
+    </form>
+
+
+{% endblock content %}
+    
