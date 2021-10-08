@@ -25,6 +25,9 @@
             <button><a href="{% url 'wallet:add_money' pk=request.user.id %}" >Add Money</a></button>
             <br>
             <br>
+            <button><a href="{% url 'wallet:withdraw_money' pk=request.user.id %}" >Withdraw Money</a></button>
+            <br>
+            <br>
             <button><a href="{% url 'wallet:checkbalance' pk=request.user.id %}" >Check Balance</a></button>
             <br>
             <br>

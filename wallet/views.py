@@ -15,7 +15,7 @@ import requests
 
 from .forms import WalletForm
 
-
+# Create Api
 @api_view(['POST'])
 def create_wallet_api(request):
 
@@ -36,86 +36,135 @@ def create_wallet_api(request):
     except Exception as e:
         return e
 
-
+# Create Form 
 def create_wallet(request):
 
-    if request.method == 'POST':
-        form = WalletForm(request.POST)
-        if form.is_valid():
+    try:
+        if request.method == 'POST':
+            form = WalletForm(request.POST)
+            if form.is_valid():
 
-            request.POST = request.POST.copy()
-            request.POST['user'] = request.user.id 
-            data = request.POST.dict()
+                request.POST = request.POST.copy()
+                request.POST['user'] = request.user.id 
+                data = request.POST.dict()
 
-            creation = requests.post('http://127.0.0.1:8000/api/create_wallet_api', data=data)
+                creation = requests.post('http://127.0.0.1:8000/api/create_wallet_api', data=data)
 
-            return redirect('wallet:create_wallet')
+                return redirect('wallet:create_wallet')
+            else:
+                print('form is not valid')
         else:
-            print('form is not valid')
-    else:
-        form= WalletForm()
+            form= WalletForm()
 
-    return render(request, "walletcreate.html", {'form':form})
+        return render(request, "walletcreate.html", {'form':form})
+    except Exception as e:
+        return e
 
+# Fetching User id
 def sample_view(request):
-    current_user = request.user
-    return HttpResponse(current_user.id)
+    try:
+        current_user = request.user
+        return HttpResponse(current_user.id)
+    except Exception as e:
+        return e
 
-
+# Fetching Current Wallet
 def sample_wallet_view(request):
-    user = request.user.id
-    current_wallet = Wallet.objects.filter(user=user)
-    # print(current_wallet)
-    return HttpResponse(current_wallet)
+    try:
+        user = request.user.id
+        current_wallet = Wallet.objects.filter(user=user)
+        # print(current_wallet)
+        return HttpResponse(current_wallet)
+    except Exception as e:
+        return e
 
+# Adding Money
 @api_view(['PUT'])
 def add_money(request,pk):
+    try:
+        if request.method == 'PUT':
+            if type(request.data) != dict:
+                ab = json.loads(request.data)
+            else:
+                ab = request.data
 
-    print(request.data)
+            if "user" in ab:
+                pass
+            else:
+                ab["user"] = pk
+            current_wallet = Wallet.objects.filter(user=ab["user"]).first() ## we can use pk
+            current_balance = current_wallet.balance
 
-    if request.method == 'PUT':
-        if type(request.data) != dict:
-            ab = json.loads(request.data)
-        else:
-            ab = request.data
+            # request.data['user'] = request.user.id
 
-        if "user" in ab:
-            pass
-        else:
-            ab["user"] = pk
-        current_wallet = Wallet.objects.filter(user=ab["user"]).first() ## we can use pk
-        current_balance = current_wallet.balance
+            ab['balance'] = int(current_balance) + int(ab['balance'])
 
-        # request.data['user'] = request.user.id
+            walletserializer = WalletSerializer(current_wallet, data=ab)
 
-        ab['balance'] = int(current_balance) + int(ab['balance'])
+            if walletserializer.is_valid():
 
-        walletserializer = WalletSerializer(current_wallet, data=ab)
+                walletserializer.save()
+                return Response(walletserializer.data)
+            else:
+                print("Serializer not valid")
+            return Response(walletserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return e
 
-        if walletserializer.is_valid():
-
-            walletserializer.save()
-            return Response(walletserializer.data)
-        else:
-            print("Serializer not valid")
-        return Response(walletserializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+# Checking Balance
 @api_view(['GET'])
 def check_balance(request,pk):
+    try:
+        wallet = Wallet.objects.get(user=pk)
 
-    wallet = Wallet.objects.get(user=pk)
+        if request.method == 'GET':
+            walletserializer = WalletSerializer(wallet)
+            return Response(walletserializer.data)
+    except Exception as e:
+        return e
 
-    if request.method == 'GET':
-        walletserializer = WalletSerializer(wallet)
-        return Response(walletserializer.data)
-
-
+# Delete Wallet Api
 @api_view(['DELETE'])
 def delete_wallet(request,pk):
+    try:
+        wallet = Wallet.objects.get(user=pk)
+        print(wallet)
+        if request.method == 'DELETE':
+            wallet.delete()
+            return redirect('wallet:create_wallet')
+    except Exception as e:
+        return e
 
-    wallet = Wallet.objects.get(user=pk)
-    print(wallet)
-    if request.method == 'DELETE':
-        wallet.delete()
-        return redirect('wallet:create_wallet')
+# Withdraw Money
+@api_view(['PUT'])
+def withdraw_money(request,pk):
+    try:
+        if request.method == 'PUT':
+            if type(request.data) != dict:
+                ab = json.loads(request.data)
+            else:
+                ab = request.data
+
+            if "user" in ab:
+                pass
+            else:
+                ab["user"] = pk
+            current_wallet = Wallet.objects.filter(user=ab["user"]).first() ## we can use pk
+            current_balance = current_wallet.balance
+
+            # request.data['user'] = request.user.id
+
+            ab['balance'] = int(current_balance) - int(ab['balance'])
+
+            walletserializer = WalletSerializer(current_wallet, data=ab)
+
+            if walletserializer.is_valid():
+
+                walletserializer.save()
+                return Response(walletserializer.data)
+            else:
+                print("Serializer not valid")
+            return Response(walletserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return e
 

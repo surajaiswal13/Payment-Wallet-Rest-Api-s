@@ -42,7 +42,7 @@
               <div class="navbar-nav ml-auto">
 
                 {% if user.is_authenticated %}
-                  {# <button class="nav-item nav-link testbutton navbuttons loggedbuttons" onclick='location.href="{% url '#' %}"'><i class="fas fa-plus"></i>Create</button> #}
+                  <button class="nav-item nav-link testbutton navbuttons loggedbuttons" onclick='location.href="{% url 'wallet:withdraw_money' pk=request.user.id %}"'><i class="fas fa-plus"></i>Create Wallets and Ops</button>
                  {# <button class="nav-item nav-link testbutton navbuttons loggedbuttons"onclick='location.href="{% url '#' username=request.user.username %}"' >{{ request.user.username }}'s Profile</button> #}
                   <button class="nav-item nav-link testbutton navbuttons loggedbuttons" onclick='location.href="{% url 'accounts:logout' %}"'>Log Out</button>
                 {% else %}
