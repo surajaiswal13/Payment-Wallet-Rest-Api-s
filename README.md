@@ -96,13 +96,13 @@ Example Input:
 #### For Withdrawing the money using Api
 ```
 $ http://127.0.0.1:8000/api/withdraw_money_from_wallet/<int:pk>
+```
 
 Example Input: 
 {
   "balance" : 10
 }
 
-```
 ## 6. Check Balance
 
 #### Checking Balance using Navigation set on create wallet page (Step no. 2)
