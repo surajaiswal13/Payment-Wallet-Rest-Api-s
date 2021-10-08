@@ -15,7 +15,7 @@ $ conda activate EnvName
 NOTE: goto to the folder when requirements.txt file is present before executing the below command.
 
 ```
-$ pip freeze > requirements.txt
+$ pip install -r requirements.txt
 ```
 
 4. Configure the project
@@ -39,6 +39,13 @@ $ python manage.py migrate
 $ pthon manage.py runserver
 ```
 
+##                OR
+
+# Use Docker Container
+
+```
+$ docker-compose up
+```
 
 # Urls and api's to Access
 

@@ -12,30 +12,28 @@
 
         {% csrf_token %}
 
-        {% bootstrap_form form %}
-        <br>
-
-        <!-- {{ form.media }} - form.media is used for displaying the content iof editor -->
-        
+        {% bootstrap_form form %}       
   
             <button class="testbutton" type="submit" value="Submit">Create Wallet</button>
             <br>
             <br>
     
+        <div class="container">
+
+            <center> <h5>Others Operations</h5>
+            <br>
             <button><a href="{% url 'wallet:add_money' pk=request.user.id %}" >Add Money</a></button>
-            <br>
-            <br>
+
             <button><a href="{% url 'wallet:withdraw_money' pk=request.user.id %}" >Withdraw Money</a></button>
-            <br>
-            <br>
+
             <button><a href="{% url 'wallet:checkbalance' pk=request.user.id %}" >Check Balance</a></button>
-            <br>
-            <br>
+
             <button><a href="{% url 'wallet:deletewallet' pk=request.user.id %}" >Delete Wallet</a></button>
 
             <br>
             <br>
-
+        </center>
+        </div>
 
 
 
